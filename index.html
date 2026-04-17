@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎬 影片靈感庫 · Abbie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Noto+Serif+TC:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5EDE0;
+    --cream2: #EDE0CF;
+    --cream3: #F0E4D4;
+    --cream4: #EAD9C4;
+    --brown-dark: #2C1F14;
+    --brown-mid: #8B5E3C;
+    --brown-cta: #3D2B1F;
+    --brown-light: #C4956A;
+    --brown-xlight: #D4A97A;
+    --tag-beauty: #C4956A22;
+    --tag-ec: #8B5E3C22;
+    --tag-media: #2C1F1422;
+    --shadow: 0 4px 24px rgba(44,31,20,0.10);
+    --shadow-card: 0 2px 12px rgba(44,31,20,0.08);
+  }
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+font-family: ‘DM Sans’, ‘Noto Serif TC’, sans-serif;
+background: var(–cream);
+color: var(–brown-dark);
+min-height: 100vh;
+position: relative;
+overflow-x: hidden;
+}
+
+/* background texture */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image:
+radial-gradient(ellipse at 20% 20%, #EAD9C444 0%, transparent 60%),
+radial-gradient(ellipse at 80% 80%, #D4A97A22 0%, transparent 60%);
+pointer-events: none;
+z-index: 0;
+}
+
+header {
+background: var(–brown-cta);
+color: var(–cream);
+padding: 20px 24px 18px;
+position: sticky;
+top: 0;
+z-index: 100;
+display: flex;
+align-items: center;
+justify-content: space-between;
+box-shadow: 0 2px 16px rgba(44,31,20,0.18);
+}
+
+.header-left h1 {
+font-family: ‘Playfair Display’, serif;
+font-size: 1.3rem;
+letter-spacing: 0.04em;
+color: var(–cream);
+}
+.header-left p {
+font-size: 0.72rem;
+color: var(–brown-xlight);
+margin-top: 2px;
+letter-spacing: 0.08em;
+}
+
+.btn-add {
+background: var(–brown-xlight);
+color: var(–brown-cta);
+border: none;
+padding: 10px 18px;
+border-radius: 50px;
+font-family: ‘Noto Serif TC’, serif;
+font-size: 0.85rem;
+font-weight: 500;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 6px;
+transition: all 0.2s;
+white-space: nowrap;
+}
+.btn-add:hover { background: var(–cream); transform: scale(1.03); }
+
+/* FILTERS */
+.filters {
+position: relative;
+z-index: 1;
+padding: 16px 20px 8px;
+display: flex;
+gap: 8px;
+overflow-x: auto;
+scrollbar-width: none;
+}
+.filters::-webkit-scrollbar { display: none; }
+
+.filter-btn {
+border: 1.5px solid var(–brown-light);
+background: transparent;
+color: var(–brown-mid);
+padding: 6px 14px;
+border-radius: 50px;
+font-size: 0.8rem;
+font-family: ‘Noto Serif TC’, serif;
+cursor: pointer;
+white-space: nowrap;
+transition: all 0.2s;
+}
+.filter-btn.active, .filter-btn:hover {
+background: var(–brown-cta);
+color: var(–cream);
+border-color: var(–brown-cta);
+}
+
+/* SEARCH */
+.search-wrap {
+position: relative;
+z-index: 1;
+padding: 8px 20px 4px;
+}
+.search-wrap input {
+width: 100%;
+padding: 10px 16px 10px 40px;
+border: 1.5px solid var(–cream4);
+border-radius: 50px;
+background: #fff8f2;
+font-family: ‘Noto Serif TC’, serif;
+font-size: 0.85rem;
+color: var(–brown-dark);
+outline: none;
+transition: border-color 0.2s;
+}
+.search-wrap input:focus { border-color: var(–brown-mid); }
+.search-icon {
+position: absolute;
+left: 34px;
+top: 50%;
+transform: translateY(-50%);
+color: var(–brown-light);
+font-size: 0.9rem;
+}
+
+/* STATS */
+.stats {
+position: relative;
+z-index: 1;
+display: flex;
+gap: 10px;
+padding: 12px 20px 4px;
+}
+.stat-pill {
+background: var(–brown-cta);
+color: var(–cream);
+padding: 5px 14px;
+border-radius: 50px;
+font-size: 0.75rem;
+font-family: ‘Noto Serif TC’, serif;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+.stat-pill span { font-family: ‘Playfair Display’, serif; font-size: 1rem; }
+
+/* CARDS */
+.cards-container {
+position: relative;
+z-index: 1;
+padding: 12px 20px 100px;
+display: flex;
+flex-direction: column;
+gap: 14px;
+}
+
+.card {
+background: #fffaf5;
+border-radius: 18px;
+padding: 18px 18px 14px;
+box-shadow: var(–shadow-card);
+border: 1px solid var(–cream4);
+transition: transform 0.2s, box-shadow 0.2s;
+position: relative;
+overflow: hidden;
+}
+.card::before {
+content: ‘’;
+position: absolute;
+left: 0; top: 0; bottom: 0;
+width: 4px;
+border-radius: 18px 0 0 18px;
+background: var(–brown-light);
+}
+.card.status-done::before { background: #A8C5A0; }
+.card.status-filming::before { background: #C4956A; }
+.card:active { transform: scale(0.98); }
+
+.card-top {
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+gap: 10px;
+margin-bottom: 10px;
+}
+
+.card-title {
+font-family: ‘Noto Serif TC’, serif;
+font-size: 0.95rem;
+font-weight: 500;
+color: var(–brown-dark);
+line-height: 1.4;
+flex: 1;
+}
+
+.card-menu-btn {
+background: none;
+border: none;
+color: var(–brown-light);
+cursor: pointer;
+font-size: 1.2rem;
+padding: 0 2px;
+line-height: 1;
+}
+
+.card-desc {
+font-size: 0.82rem;
+color: var(–brown-mid);
+line-height: 1.6;
+margin-bottom: 12px;
+}
+
+.card-meta {
+display: flex;
+flex-wrap: wrap;
+gap: 6px;
+align-items: center;
+}
+
+.tag {
+padding: 3px 10px;
+border-radius: 50px;
+font-size: 0.72rem;
+font-family: ‘Noto Serif TC’, serif;
+border: 1px solid transparent;
+}
+.tag-beauty { background: #F0E4D4; color: var(–brown-mid); border-color: #D4A97A55; }
+.tag-ec { background: #EAD9C4; color: var(–brown-cta); border-color: #8B5E3C33; }
+.tag-media { background: #2C1F1408; color: var(–brown-dark); border-color: #2C1F1422; }
+
+.platform-badge {
+padding: 3px 10px;
+border-radius: 50px;
+font-size: 0.72rem;
+background: var(–brown-cta);
+color: var(–cream);
+font-family: ‘DM Sans’, sans-serif;
+}
+
+.status-badge {
+padding: 3px 10px;
+border-radius: 50px;
+font-size: 0.72rem;
+font-family: ‘Noto Serif TC’, serif;
+}
+.status-idea { background: #F5EDE0; color: var(–brown-mid); border: 1px solid var(–cream4); }
+.status-filming { background: #FFF0DC; color: #A0622A; border: 1px solid #D4A97A55; }
+.status-done { background: #EBF3EA; color: #4A7A44; border: 1px solid #A8C5A044; }
+
+.card-date {
+font-size: 0.7rem;
+color: var(–brown-xlight);
+margin-left: auto;
+font-family: ‘DM Sans’, sans-serif;
+}
+
+.empty-state {
+text-align: center;
+padding: 60px 20px;
+color: var(–brown-light);
+}
+.empty-state .emoji { font-size: 3rem; margin-bottom: 12px; }
+.empty-state p { font-family: ‘Noto Serif TC’, serif; font-size: 0.9rem; line-height: 1.8; }
+
+/* MODAL */
+.modal-overlay {
+position: fixed;
+inset: 0;
+background: rgba(44,31,20,0.5);
+z-index: 200;
+display: flex;
+align-items: flex-end;
+justify-content: center;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.25s;
+}
+.modal-overlay.open {
+opacity: 1;
+pointer-events: all;
+}
+
+.modal {
+background: var(–cream);
+border-radius: 28px 28px 0 0;
+padding: 28px 24px 40px;
+width: 100%;
+max-width: 600px;
+max-height: 92vh;
+overflow-y: auto;
+transform: translateY(100%);
+transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+
+.modal-handle {
+width: 40px;
+height: 4px;
+background: var(–cream4);
+border-radius: 2px;
+margin: 0 auto 20px;
+}
+
+.modal h2 {
+font-family: ‘Playfair Display’, serif;
+font-size: 1.2rem;
+color: var(–brown-dark);
+margin-bottom: 20px;
+font-style: italic;
+}
+
+.form-group { margin-bottom: 16px; }
+.form-group label {
+display: block;
+font-size: 0.78rem;
+font-family: ‘Noto Serif TC’, serif;
+color: var(–brown-mid);
+margin-bottom: 6px;
+letter-spacing: 0.05em;
+}
+.form-group input,
+.form-group textarea,
+.form-group select {
+width: 100%;
+padding: 12px 16px;
+border: 1.5px solid var(–cream4);
+border-radius: 14px;
+background: #fff8f2;
+font-family: ‘Noto Serif TC’, serif;
+font-size: 0.88rem;
+color: var(–brown-dark);
+outline: none;
+transition: border-color 0.2s;
+-webkit-appearance: none;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus { border-color: var(–brown-mid); }
+.form-group textarea { resize: vertical; min-height: 80px; }
+
+.form-row { display: flex; gap: 10px; }
+.form-row .form-group { flex: 1; }
+
+.btn-submit {
+width: 100%;
+padding: 14px;
+background: var(–brown-cta);
+color: var(–cream);
+border: none;
+border-radius: 14px;
+font-family: ‘Noto Serif TC’, serif;
+font-size: 0.95rem;
+font-weight: 500;
+cursor: pointer;
+margin-top: 8px;
+transition: all 0.2s;
+letter-spacing: 0.05em;
+}
+.btn-submit:hover { opacity: 0.9; transform: scale(0.99); }
+
+/* ACTION MENU */
+.action-menu {
+position: fixed;
+inset: 0;
+z-index: 300;
+display: flex;
+align-items: flex-end;
+justify-content: center;
+background: rgba(44,31,20,0.4);
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.2s;
+}
+.action-menu.open { opacity: 1; pointer-events: all; }
+.action-sheet {
+background: var(–cream);
+border-radius: 24px 24px 0 0;
+padding: 20px 20px 36px;
+width: 100%;
+max-width: 600px;
+transform: translateY(100%);
+transition: transform 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+.action-menu.open .action-sheet { transform: translateY(0); }
+.action-btn {
+display: flex;
+align-items: center;
+gap: 12px;
+width: 100%;
+padding: 14px 16px;
+background: none;
+border: none;
+font-family: ‘Noto Serif TC’, serif;
+font-size: 0.92rem;
+color: var(–brown-dark);
+cursor: pointer;
+border-radius: 12px;
+transition: background 0.15s;
+text-align: left;
+}
+.action-btn:hover { background: var(–cream3); }
+.action-btn.danger { color: #c0392b; }
+.action-divider { height: 1px; background: var(–cream4); margin: 6px 0; }
+
+/* Toast */
+.toast {
+position: fixed;
+bottom: 30px;
+left: 50%;
+transform: translateX(-50%) translateY(80px);
+background: var(–brown-cta);
+color: var(–cream);
+padding: 12px 24px;
+border-radius: 50px;
+font-family: ‘Noto Serif TC’, serif;
+font-size: 0.85rem;
+z-index: 999;
+transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+@media (min-width: 600px) {
+.cards-container { max-width: 600px; margin: 0 auto; }
+.filters, .search-wrap, .stats { max-width: 600px; margin: 0 auto; }
+header { padding: 20px 32px; }
+.modal, .action-sheet { border-radius: 28px; margin-bottom: 20px; }
+}
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>🎬 影片靈感庫</h1>
+    <p>ABBIE · VIDEO IDEAS</p>
+  </div>
+  <button class="btn-add" onclick="openModal()">
+    <span>＋</span> 記靈感
+  </button>
+</header>
+
+<div class="stats">
+  <div class="stat-pill">💡 全部 <span id="count-all">0</span></div>
+  <div class="stat-pill">🎥 待拍 <span id="count-idea">0</span></div>
+  <div class="stat-pill">✨ 已發 <span id="count-done">0</span></div>
+</div>
+
+<div class="search-wrap">
+  <span class="search-icon">🔍</span>
+  <input type="text" id="search-input" placeholder="搜尋靈感、關鍵字..." oninput="renderCards()">
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" data-filter="all" onclick="setFilter(this,'all')">全部</button>
+  <button class="filter-btn" data-filter="beauty" onclick="setFilter(this,'beauty')">美業</button>
+  <button class="filter-btn" data-filter="ec" onclick="setFilter(this,'ec')">電商</button>
+  <button class="filter-btn" data-filter="media" onclick="setFilter(this,'media')">自媒體</button>
+  <button class="filter-btn" data-filter="idea" onclick="setFilter(this,'status-idea')">待拍</button>
+  <button class="filter-btn" data-filter="filming" onclick="setFilter(this,'status-filming')">拍攝中</button>
+  <button class="filter-btn" data-filter="done" onclick="setFilter(this,'status-done')">已發布</button>
+</div>
+
+<div class="cards-container" id="cards-container">
+  <div class="empty-state">
+    <div class="emoji">🌙</div>
+    <p>還沒有靈感喔～<br>點右上角「記靈感」開始記錄！</p>
+  </div>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2 id="modal-title">✦ 新增靈感</h2>
+    <input type="hidden" id="edit-id">
+
+```
+<div class="form-group">
+  <label>影片標題 *</label>
+  <input type="text" id="input-title" placeholder="這支影片要講什麼？">
+</div>
+<div class="form-group">
+  <label>靈感描述 / 拍攝重點</label>
+  <textarea id="input-desc" placeholder="細節、拍攝方式、想說的話..."></textarea>
+</div>
+<div class="form-row">
+  <div class="form-group">
+    <label>分類</label>
+    <select id="input-tag">
+      <option value="beauty">💄 美業</option>
+      <option value="ec">🛒 電商</option>
+      <option value="media">📱 自媒體</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>平台</label>
+    <select id="input-platform">
+      <option value="IG">IG Reels</option>
+      <option value="TikTok">TikTok</option>
+      <option value="YouTube">YouTube</option>
+      <option value="全平台">全平台</option>
+    </select>
+  </div>
+</div>
+<div class="form-group">
+  <label>狀態</label>
+  <select id="input-status">
+    <option value="idea">💡 待拍</option>
+    <option value="filming">🎬 拍攝中</option>
+    <option value="done">✅ 已發布</option>
+  </select>
+</div>
+<button class="btn-submit" onclick="saveIdea()">儲存靈感 ✦</button>
+```
+
+  </div>
+</div>
+
+<!-- ACTION MENU -->
+
+<div class="action-menu" id="action-menu" onclick="closeActionMenu()">
+  <div class="action-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <button class="action-btn" onclick="editFromMenu()">✏️ 編輯</button>
+    <button class="action-btn" onclick="changeStatusFromMenu('filming')">🎬 標記「拍攝中」</button>
+    <button class="action-btn" onclick="changeStatusFromMenu('done')">✅ 標記「已發布」</button>
+    <button class="action-btn" onclick="changeStatusFromMenu('idea')">💡 改回「待拍」</button>
+    <div class="action-divider"></div>
+    <button class="action-btn danger" onclick="deleteFromMenu()">🗑️ 刪除這則靈感</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let ideas = JSON.parse(localStorage.getItem('abbie_ideas') || '[]');
+let currentFilter = 'all';
+let activeMenuId = null;
+
+const TAG_MAP = {
+  beauty: { label: '💄 美業', cls: 'tag-beauty' },
+  ec: { label: '🛒 電商', cls: 'tag-ec' },
+  media: { label: '📱 自媒體', cls: 'tag-media' },
+};
+const STATUS_MAP = {
+  idea: { label: '💡 待拍', cls: 'status-idea' },
+  filming: { label: '🎬 拍攝中', cls: 'status-filming' },
+  done: { label: '✅ 已發布', cls: 'status-done' },
+};
+
+function save() {
+  localStorage.setItem('abbie_ideas', JSON.stringify(ideas));
+}
+
+function setFilter(btn, f) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = f;
+  renderCards();
+}
+
+function renderCards() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  let filtered = ideas.filter(i => {
+    const matchQ = !q || i.title.toLowerCase().includes(q) || (i.desc||'').toLowerCase().includes(q);
+    if (!matchQ) return false;
+    if (currentFilter === 'all') return true;
+    if (currentFilter === 'beauty') return i.tag === 'beauty';
+    if (currentFilter === 'ec') return i.tag === 'ec';
+    if (currentFilter === 'media') return i.tag === 'media';
+    if (currentFilter === 'status-idea') return i.status === 'idea';
+    if (currentFilter === 'status-filming') return i.status === 'filming';
+    if (currentFilter === 'status-done') return i.status === 'done';
+    return true;
+  });
+
+  const container = document.getElementById('cards-container');
+
+  document.getElementById('count-all').textContent = ideas.length;
+  document.getElementById('count-idea').textContent = ideas.filter(i=>i.status==='idea').length;
+  document.getElementById('count-done').textContent = ideas.filter(i=>i.status==='done').length;
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="emoji">🔍</div><p>找不到符合的靈感<br>換個關鍵字試試看</p></div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(i => {
+    const tag = TAG_MAP[i.tag] || TAG_MAP.beauty;
+    const status = STATUS_MAP[i.status] || STATUS_MAP.idea;
+    const date = new Date(i.date).toLocaleDateString('zh-TW',{month:'short',day:'numeric'});
+    return `
+    <div class="card status-${i.status}" id="card-${i.id}">
+      <div class="card-top">
+        <div class="card-title">${escHtml(i.title)}</div>
+        <button class="card-menu-btn" onclick="openActionMenu('${i.id}')">⋯</button>
+      </div>
+      ${i.desc ? `<div class="card-desc">${escHtml(i.desc)}</div>` : ''}
+      <div class="card-meta">
+        <span class="tag ${tag.cls}">${tag.label}</span>
+        <span class="platform-badge">${i.platform||'IG'}</span>
+        <span class="status-badge ${status.cls}">${status.label}</span>
+        <span class="card-date">${date}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(str) {
+  return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function openModal(editId) {
+  document.getElementById('modal-title').textContent = editId ? '✦ 編輯靈感' : '✦ 新增靈感';
+  document.getElementById('edit-id').value = editId || '';
+  if (editId) {
+    const i = ideas.find(x=>x.id===editId);
+    if (i) {
+      document.getElementById('input-title').value = i.title;
+      document.getElementById('input-desc').value = i.desc||'';
+      document.getElementById('input-tag').value = i.tag;
+      document.getElementById('input-platform').value = i.platform||'IG';
+      document.getElementById('input-status').value = i.status;
+    }
+  } else {
+    document.getElementById('input-title').value = '';
+    document.getElementById('input-desc').value = '';
+    document.getElementById('input-tag').value = 'beauty';
+    document.getElementById('input-platform').value = 'IG';
+    document.getElementById('input-status').value = 'idea';
+  }
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('input-title').focus(), 300);
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+function saveIdea() {
+  const title = document.getElementById('input-title').value.trim();
+  if (!title) { showToast('請填寫影片標題喔 🍵'); return; }
+  const editId = document.getElementById('edit-id').value;
+  const data = {
+    title,
+    desc: document.getElementById('input-desc').value.trim(),
+    tag: document.getElementById('input-tag').value,
+    platform: document.getElementById('input-platform').value,
+    status: document.getElementById('input-status').value,
+  };
+  if (editId) {
+    const idx = ideas.findIndex(x=>x.id===editId);
+    if (idx>-1) ideas[idx] = {...ideas[idx], ...data};
+    showToast('已更新 ✦');
+  } else {
+    ideas.unshift({ id: Date.now().toString(), date: new Date().toISOString(), ...data });
+    showToast('靈感已記下來啦 🎬');
+  }
+  save(); renderCards(); closeModal();
+}
+
+function openActionMenu(id) {
+  activeMenuId = id;
+  document.getElementById('action-menu').classList.add('open');
+}
+function closeActionMenu() {
+  document.getElementById('action-menu').classList.remove('open');
+  activeMenuId = null;
+}
+
+function editFromMenu() {
+  closeActionMenu();
+  setTimeout(()=>openModal(activeMenuId||document.getElementById('edit-id').value), 200);
+}
+// fix: capture id before close
+let _menuId = null;
+function openActionMenu(id) {
+  _menuId = id;
+  document.getElementById('action-menu').classList.add('open');
+}
+function editFromMenu() {
+  const id = _menuId;
+  closeActionMenu();
+  setTimeout(()=>openModal(id), 200);
+}
+function changeStatusFromMenu(status) {
+  const id = _menuId;
+  closeActionMenu();
+  const i = ideas.find(x=>x.id===id);
+  if (i) { i.status=status; save(); renderCards(); showToast('狀態已更新 ✦'); }
+}
+function deleteFromMenu() {
+  const id = _menuId;
+  closeActionMenu();
+  if (confirm('確定要刪除這則靈感嗎？')) {
+    ideas = ideas.filter(x=>x.id!==id);
+    save(); renderCards(); showToast('已刪除');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+// Sample data on first load
+if (ideas.length === 0) {
+  ideas = [
+    { id:'1', date: new Date().toISOString(), title:'美睫前後對比 IG Reels', desc:'拍特寫，加音樂，展示手法細節，結尾放預約連結', tag:'beauty', platform:'IG', status:'idea' },
+    { id:'2', date: new Date().toISOString(), title:'Mixx電商開箱體驗分享', desc:'拍開箱，說使用心得，帶優惠碼', tag:'ec', platform:'全平台', status:'filming' },
+    { id:'3', date: new Date().toISOString(), title:'我怎麼靠IG讓美業預約滿檔', desc:'分享自媒體經營心法，適合做教學系列第一集', tag:'media', platform:'IG', status:'done' },
+  ];
+  save();
+}
+
+renderCards();
+</script>
+
+</body>
+</html>
